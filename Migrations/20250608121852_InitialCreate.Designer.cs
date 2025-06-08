@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookstoreApp.Migrations
 {
     [DbContext(typeof(BookstoreContext))]
-    [Migration("20250608104155_InitialCreate")]
+    [Migration("20250608121852_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -257,11 +257,6 @@ namespace BookstoreApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(21)
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -278,11 +273,16 @@ namespace BookstoreApp.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("UserType")
+                        .IsRequired()
+                        .HasMaxLength(21)
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.ToTable("Users");
 
-                    b.HasDiscriminator().HasValue("User");
+                    b.HasDiscriminator<string>("UserType").HasValue("User");
 
                     b.UseTphMappingStrategy();
                 });
@@ -296,6 +296,13 @@ namespace BookstoreApp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Warehouses");
+                });
+
+            modelBuilder.Entity("BookstoreApp.Models.Guest", b =>
+                {
+                    b.HasBaseType("BookstoreApp.Models.User");
+
+                    b.HasDiscriminator().HasValue("Guest");
                 });
 
             modelBuilder.Entity("BookstoreApp.Models.RegisteredUser", b =>
@@ -368,9 +375,11 @@ namespace BookstoreApp.Migrations
 
             modelBuilder.Entity("BookstoreApp.Models.Book", b =>
                 {
-                    b.HasOne("BookstoreApp.Models.Warehouse", null)
+                    b.HasOne("BookstoreApp.Models.Warehouse", "Warehouse")
                         .WithMany("Books")
                         .HasForeignKey("WarehouseId");
+
+                    b.Navigation("Warehouse");
                 });
 
             modelBuilder.Entity("BookstoreApp.Models.Cart", b =>

@@ -157,3 +157,4 @@ D:\ProjektyC#\MP-final_v2\BookstoreApp\bin\Debug\net8.0\runtimes\win-arm\native\
 D:\ProjektyC#\MP-final_v2\BookstoreApp\bin\Debug\net8.0\runtimes\win-arm64\native\e_sqlite3.dll
 D:\ProjektyC#\MP-final_v2\BookstoreApp\bin\Debug\net8.0\runtimes\win-x64\native\e_sqlite3.dll
 D:\ProjektyC#\MP-final_v2\BookstoreApp\bin\Debug\net8.0\runtimes\win-x86\native\e_sqlite3.dll
+D:\ProjektyC#\MP-final_v2\BookstoreApp\obj\Debug\net8.0\BookstoreApp.sourcelink.json
