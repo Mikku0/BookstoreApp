@@ -1,0 +1,37 @@
+@model BookstoreApp.Models.Book
+
+@{
+    ViewData["Title"] = "Dodaj nową książkę";
+}
+
+<h2>Dodaj nową książkę</h2>
+
+<form asp-controller="Manager" asp-action="AddBook" method="post" novalidate>
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Author" class="form-label"></label>
+        <input asp-for="Author" class="form-control" />
+        <span asp-validation-for="Author" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Price" class="form-label"></label>
+        <input asp-for="Price" class="form-control" type="number" step="0.01" min="0" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Genre" class="form-label"></label>
+        <input asp-for="Genre" class="form-control" />
+        <span asp-validation-for="Genre" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Dodaj książkę</button>
+    <a asp-action="Dashboard" asp-controller="Manager" class="btn btn-secondary ms-2">Anuluj</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

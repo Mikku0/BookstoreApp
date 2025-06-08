@@ -8,16 +8,8 @@ public class Book
     public decimal Price { get; set; }
     public string Genre { get; set; } = "";
     
-    // DODAĆ: Powiązanie z magazynem
-    public int? WarehouseId { get; set; }
-    public virtual Warehouse? Warehouse { get; set; }
-
     public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
     public virtual ICollection<OrderDetails> OrderDetails { get; set; } = new List<OrderDetails>();
     public virtual ICollection<Discount> Discounts { get; set; } = new List<Discount>();
 
-    public void ApplyDiscount()
-    {
-        // Apply discount to book
-    }
 }

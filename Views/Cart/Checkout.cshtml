@@ -1,0 +1,181 @@
+@model BookstoreApp.Models.Cart
+
+@{
+    ViewBag.Title = "Zamówienie";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="site-section">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-md-12">
+                <div class="site-blocks-table">
+                    <div class="breadcrumb">
+                        <a href="@Url.Action("Index", "Home")">Strona główna</a>
+                        <span class="mx-2">/</span>
+                        <a href="@Url.Action("Index", "Cart")">Koszyk</a>
+                        <span class="mx-2">/</span>
+                        <strong class="text-black">Zamówienie</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <form method="post" asp-action="ProcessCheckout">
+            <div class="row">
+                <div class="col-md-6 mb-5 mb-md-0">
+                    <h2 class="h3 mb-3 text-black">Dane do rozliczenia</h2>
+                    <div class="p-3 p-lg-5 border">
+
+                        <div class="form-group">
+                            <label for="Country" class="text-black">Kraj <span class="text-danger">*</span></label>
+                            <select id="Country" name="Country" class="form-control">
+                                <option value="Polska" selected>Polska</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <label for="FirstName" class="text-black">Imię <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="FirstName" name="FirstName"
+                                    placeholder="Jan">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="LastName" class="text-black">Nazwisko <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="LastName" name="LastName"
+                                    placeholder="Kowalski">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="CompanyName" class="text-black">Nazwa firmy (opcjonalnie)</label>
+                            <input type="text" class="form-control" id="CompanyName" name="CompanyName">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Address" class="text-black">Adres <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="Address" name="Address"
+                                placeholder="Ulica i numer domu">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Apartment" class="text-black">Mieszkanie, piętro itp. (opcjonalnie)</label>
+                            <input type="text" class="form-control" id="Apartment" name="Apartment">
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <label for="State" class="text-black">Województwo <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="State" name="State">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="ZipCode" class="text-black">Kod pocztowy <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="ZipCode" name="ZipCode">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <label for="Email" class="text-black">Adres e-mail <span
+                                        class="text-danger">*</span></label>
+                                <input type="email" class="form-control" id="Email" name="Email">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="Phone" class="text-black">Telefon <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="Phone" name="Phone">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="text-black"><strong>Metoda płatności</strong></label>
+                            <div class="d-block my-3">
+                                <div class="custom-control custom-radio">
+                                    <input id="paymentPaypal" name="PaymentMethod" type="radio"
+                                        class="custom-control-input" value="PayPal" checked>
+                                    <label class="custom-control-label" for="paymentPaypal">PayPal</label>
+                                </div>
+                                <div class="custom-control custom-radio">
+                                    <input id="paymentCard" name="PaymentMethod" type="radio"
+                                        class="custom-control-input" value="Karta kredytowa">
+                                    <label class="custom-control-label" for="paymentCard">Karta kredytowa</label>
+                                </div>
+                            
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="p-3 p-lg-5 border">
+                        <h2 class="h3 mb-3 text-black">Twoje zamówienie</h2>
+
+                        <table class="table site-block-order-table mb-5">
+                            <thead>
+                                <tr>
+                                    <th>Produkt</th>
+                                    <th>Razem</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Items)
+                                {
+                                    <tr>
+                                        <td>@item.Book.Name <strong class="mx-2">x</strong> @item.Quantity</td>
+                                        <td>@item.Book.Price.ToString("C")</td>
+                                    </tr>
+                                }
+                                <tr>
+                                    <td class="text-black font-weight-bold"><strong>Suma koszyka</strong></td>
+                                    <td class="text-black">@Model.CalculateValue().ToString("C")</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-black font-weight-bold"><strong>Dostawa</strong></td>
+                                    <td class="text-black" id="deliveryCost">0,00 zł</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-black font-weight-bold"><strong>Suma zamówienia</strong></td>
+                                    <td class="text-black font-weight-bold" id="orderTotal">
+                                        @Model.CalculateValue().ToString("C")</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-lg py-3 btn-block" id="submitOrder">
+                                Złóż zamówienie
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('input[name="DeliveryMethod"]').forEach(radio => {
+            radio.addEventListener('change', function () {
+                const deliveryCostElement = document.getElementById("deliveryCost");
+                const orderTotalElement = document.getElementById("orderTotal");
+                const baseTotal = parseFloat("@Model.CalculateValue()");
+
+                let deliveryCost = 0;
+                if (this.value === "Ekspresowa") {
+                    deliveryCost = 4.00;
+                }
+
+                deliveryCostElement.textContent = deliveryCost.toFixed(2) + " zł";
+                const finalTotal = baseTotal + deliveryCost;
+                orderTotalElement.textContent = finalTotal.toFixed(2) + " zł";
+            });
+        });
+    </script>
+}

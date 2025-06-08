@@ -13,8 +13,4 @@ public class Discount
 
     public virtual ICollection<Book> Books { get; set; } = new List<Book>();
 
-    public void ApplyDiscount()
-    {
-        // Apply discount logic
-    }
 }

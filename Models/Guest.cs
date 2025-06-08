@@ -7,13 +7,7 @@ namespace BookstoreApp.Models;
 
 public class Guest : User
 {
-    public override void BrowseOffers()
-    {
-        // Implementation for guest browsing
-    }
+    public override void BrowseOffers() { }
 
-    public override void Register()
-    {
-        // Registration redirection
-    }
+    public override void Register() { }
 }

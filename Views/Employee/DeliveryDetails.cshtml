@@ -1,0 +1,77 @@
+@model BookstoreApp.Models.Delivery
+
+<h2>Szczegóły dostawy #@Model.Id</h2>
+
+<div class="card">
+    <div class="card-header">
+        <h4>Informacje o dostawie</h4>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>ID Dostawy:</strong> #@Model.Id</p>
+                <p><strong>Zamówienie:</strong> #@Model.Order.Id</p>
+                <p><strong>Status zamówienia:</strong> @Model.Order.Status</p>
+                <p><strong>Pracownik:</strong> @Model.Employee.FirstName</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Klient:</strong> @Model.Order.Client.FirstName</p>
+                <p><strong>login klienta:</strong> @Model.Order.Client.UserLogin</p>
+                <p><strong>Adres dostawy:</strong> @Model.Order.Client.Address</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-3">
+    <div class="card-header">
+        <h4>Zamówione książki</h4>
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Tytuł</th>
+                    <th>Autor</th>
+                    <th>Ilość</th>
+                    <th>Cena</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var detail in Model.Order.OrderDetails)
+                {
+                    <tr>
+                        <td>@detail.Book.Name</td>
+                        <td>@detail.Book.Author</td>
+                        <td>@detail.Quantity</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="mt-3">
+    <a href="@Url.Action("ManageDeliveries")" class="btn btn-secondary">Powrót do listy dostaw</a>
+
+    <div class="mt-3">
+        <a href="@Url.Action("ManageDeliveries")" class="btn btn-secondary">Powrót do listy dostaw</a>
+
+        @if (Model.Order.Status == BookstoreApp.Models.OrderStatus.Opłacone)
+        {
+            <form asp-action="CompleteDelivery" asp-route-id="@Model.Id" method="post" style="display: inline;">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-success"
+                    onclick="return confirm('Czy na pewno chcesz zrealizować tę dostawę?')">
+                    Zrealizuj dostawę
+                </button>
+            </form>
+        }
+        else if (Model.Order.Status == BookstoreApp.Models.OrderStatus.Wysłane)
+        {
+        <div class="alert alert-success">
+            <strong>Dostawa zrealizowana!</strong> Zamówienie zostało wysłane.
+        </div>
+        }
+    </div>
+</div>

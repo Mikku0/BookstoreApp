@@ -15,7 +15,6 @@ namespace BookstoreApp.Data
         public DbSet<Guest> Guests { get; set; }
 
         public DbSet<Book> Books { get; set; }
-        public DbSet<Discount> Discounts { get; set; }
 
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
@@ -25,14 +24,11 @@ namespace BookstoreApp.Data
         public DbSet<Delivery> Deliveries { get; set; }
 
         public DbSet<Report> Reports { get; set; }
-        public DbSet<Warehouse> Warehouses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Strategia dziedziczenia - TPH (Table-per-Hierarchy)
             modelBuilder.Entity<User>().UseTphMappingStrategy();
 
-            // Dziedziczenie i typy
             modelBuilder.Entity<User>().HasDiscriminator<string>("UserType")
                 .HasValue<RegisteredUser>("RegisteredUser")
                 .HasValue<Client>("Client")
@@ -40,19 +36,16 @@ namespace BookstoreApp.Data
                 .HasValue<Manager>("Manager")
                 .HasValue<Guest>("Guest");
 
-            // POPRAWKA 1: Koszyk - RegisteredUser (nie User)
             modelBuilder.Entity<Cart>()
-                .HasOne(c => c.User)
-                .WithOne(u => u.Cart)
+                .HasOne(c => c.Client)
+                .WithOne(cl => cl.Cart)
                 .HasForeignKey<Cart>(c => c.UserId);
 
-            // Klient - Zamówienia
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.Client)
                 .WithMany(c => c.Orders)
                 .HasForeignKey(o => o.ClientId);
 
-            // Zamówienie - Szczegóły
             modelBuilder.Entity<OrderDetails>()
                 .HasOne(od => od.Order)
                 .WithMany(o => o.OrderDetails)
@@ -63,7 +56,6 @@ namespace BookstoreApp.Data
                 .WithMany(b => b.OrderDetails)
                 .HasForeignKey(od => od.BookId);
 
-            // Koszyk - Pozycje
             modelBuilder.Entity<CartItem>()
                 .HasOne(ci => ci.Cart)
                 .WithMany(c => c.Items)
@@ -74,25 +66,29 @@ namespace BookstoreApp.Data
                 .WithMany(b => b.CartItems)
                 .HasForeignKey(ci => ci.BookId);
 
-            // Dostawa - Zamówienie
             modelBuilder.Entity<Delivery>()
                 .HasOne(d => d.Order)
                 .WithMany(o => o.Deliveries)
                 .HasForeignKey(d => d.OrderId);
 
-            // Rabaty - relacja wiele-do-wielu z książkami
+            modelBuilder.Entity<Delivery>()
+                .HasOne(d => d.Employee)
+                .WithMany(e => e.Deliveries)
+                .HasForeignKey(d => d.EmployeeId);
+
+            modelBuilder.Entity<Report>()
+                .HasOne(r => r.Manager)
+                .WithMany(m => m.Reports)
+                .HasForeignKey(r => r.ManagerId);
+
             modelBuilder.Entity<Book>()
                 .HasMany(b => b.Discounts)
                 .WithMany(d => d.Books);
 
-            // POPRAWKA 2: Magazyn - książki (kompletna konfiguracja)
-            modelBuilder.Entity<Book>()
-                .HasOne(b => b.Warehouse)
-                .WithMany(w => w.Books)
-                .HasForeignKey(b => b.WarehouseId)
-                .IsRequired(false); // Opcjonalne powiązanie
+            modelBuilder.Entity<Order>()
+                .Property(o => o.Status)
+                .HasConversion<string>();
 
-            // Przykładowe dane
             modelBuilder.Entity<Book>().HasData(
                 new Book { Id = 1, Name = "Pan Tadeusz", Author = "Adam Mickiewicz", Price = 29.99m, Genre = "Klasyka" },
                 new Book { Id = 2, Name = "Wiedźmin", Author = "Andrzej Sapkowski", Price = 34.99m, Genre = "Fantasy" },

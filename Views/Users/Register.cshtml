@@ -1,55 +1,53 @@
 @{
-    ViewData["Title"] = "Rejestracja";
+    ViewData["Title"] = "Rejestracja Klienta";
 }
 
-<div class="container py-5">
+<div class="container mt-4">
     <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card shadow">
-                <div class="card-body p-4">
-                    <h2 class="card-title text-center mb-4">Rejestracja</h2>
-                    
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">Rejestracja Klienta</h4>
+                </div>
+                <div class="card-body">
                     @if (ViewBag.Error != null)
                     {
                         <div class="alert alert-danger">@ViewBag.Error</div>
                     }
-
+                    
                     <form method="post">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="firstName" class="form-label">Imię:</label>
-                                <input type="text" class="form-control" id="firstName" name="firstName" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="lastName" class="form-label">Nazwisko:</label>
-                                <input type="text" class="form-control" id="lastName" name="lastName" required>
-                            </div>
+                        <div class="mb-3">
+                            <label for="firstName" class="form-label">Imię</label>
+                            <input type="text" class="form-control" id="firstName" name="firstName" required>
                         </div>
                         
                         <div class="mb-3">
-                            <label for="login" class="form-label">Login:</label>
+                            <label for="lastName" class="form-label">Nazwisko</label>
+                            <input type="text" class="form-control" id="lastName" name="lastName" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="login" class="form-label">Login</label>
                             <input type="text" class="form-control" id="login" name="login" required>
                         </div>
                         
                         <div class="mb-3">
-                            <label for="password" class="form-label">Hasło:</label>
+                            <label for="password" class="form-label">Hasło</label>
                             <input type="password" class="form-control" id="password" name="password" required>
                         </div>
                         
-                        <div class="mb-4">
-                            <label for="address" class="form-label">Adres:</label>
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Adres</label>
                             <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
                         </div>
                         
-                        <div class="d-grid mb-3">
-                            <button type="submit" class="btn btn-primary">Zarejestruj się</button>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success">Zarejestruj Klienta</button>
                         </div>
                     </form>
                     
-                    <div class="text-center">
-                        <p class="mb-0">Masz już konto? 
-                            <a asp-controller="Users" asp-action="Login">Zaloguj się</a>
-                        </p>
+                    <div class="text-center mt-3">
+                        <a href="@Url.Action("Login", "Users")" class="text-decoration-none">Masz już konto? Zaloguj się</a>
                     </div>
                 </div>
             </div>

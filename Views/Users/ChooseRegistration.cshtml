@@ -1,0 +1,78 @@
+@{
+    ViewData["Title"] = "Wybierz Typ Konta";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="text-center mb-5">
+                <h2>Wybierz Typ Konta</h2>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card h-100 border-success">
+                        <div class="card-header bg-success text-white text-center">
+                            <h5 class="mb-0">Klient</h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <i class="fas fa-user fa-3x text-success mb-3"></i>
+                            <h6>Dla Kupujących</h6>
+                            <p class="text-muted small">
+                                - Przeglądanie książek<br>
+                                - Składanie zamówień<br>
+                                - Zarządzanie koszykiem<br>
+                                - Historia zakupów
+                            </p>
+                        </div>
+                        <div class="card-footer text-center">
+                            <a href="@Url.Action("Register", "Users")" class="btn btn-success">Zarejestruj jako Klient</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card h-100 border-primary">
+                        <div class="card-header bg-primary text-white text-center">
+                            <h5 class="mb-0">Pracownik</h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <i class="fas fa-briefcase fa-3x text-primary mb-3"></i>
+                            <h6>Dla pracowników</h6>
+                            <p class="text-muted small">
+                                - Zarządzanie zamówieniami<br>
+                                - Aktualizacja statusów
+                            </p>
+                        </div>
+                        <div class="card-footer text-center">
+                            <a href="@Url.Action("RegisterEmployee", "Users")" class="btn btn-primary">Zarejestruj jako Pracownik</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card h-100 border-warning">
+                        <div class="card-header bg-warning text-dark text-center">
+                            <h5 class="mb-0">Kierownik</h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <i class="fas fa-crown fa-3x text-warning mb-3"></i>
+                            <h6>Dla zarządzających</h6>
+                            <p class="text-muted small">
+                                - Raporty i statystyki<br>
+                                - Dodawanie produktów
+                            </p>
+                        </div>
+                        <div class="card-footer text-center">
+                            <a href="@Url.Action("RegisterManager", "Users")" class="btn btn-warning">Zarejestruj jako Kierownik</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <p>Masz już konto? <a href="@Url.Action("Login", "Users")">Zaloguj się tutaj</a></p>
+            </div>
+        </div>
+    </div>
+</div>

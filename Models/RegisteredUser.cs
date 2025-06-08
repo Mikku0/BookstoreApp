@@ -8,20 +8,11 @@ namespace BookstoreApp.Models;
 public abstract class RegisteredUser : User
     {
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
-        public virtual Cart? Cart { get; set; } // Dodajemy koszyk do użytkownika
+        public virtual Cart? Cart { get; set; }
 
-        public override void BrowseOffers()
-        {
-            // Implementation for registered user browsing
-        }
+        public override void BrowseOffers() { }
 
-        public override void Register()
-        {
-            // Implementation for user registration
-        }
+        public override void Register() { }
 
-        public virtual void Login()
-        {
-            // Login implementation
-        }
+        public virtual void Login() { }
     }

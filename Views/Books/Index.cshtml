@@ -28,26 +28,7 @@
                     <div class="col-md-6">
                         <h2 class="h4 text-black">Wszystkie książki</h2>
                     </div>
-                    <div class="col-md-6">
-                        <div class="d-flex justify-content-end">
-                            <div class="dropdown me-2">
-                                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
-                                    data-bs-toggle="dropdown">
-                                    Sortuj
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#">Najnowsze</a></li>
-                                    <li><a class="dropdown-item" href="#">Nazwa A-Z</a></li>
-                                    <li><a class="dropdown-item" href="#">Nazwa Z-A</a></li>
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
-                                    <li><a class="dropdown-item" href="#">Cena: rosnąco</a></li>
-                                    <li><a class="dropdown-item" href="#">Cena: malejąco</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
 
                 <div class="row">
@@ -102,78 +83,7 @@
                     }
                 </div>
 
-                <!-- Pagination -->
-                <div class="row mt-4">
-                    <div class="col-md-12 text-center">
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination justify-content-center">
-                                <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Previous">
-                                        <span aria-hidden="true">&laquo;</span>
-                                    </a>
-                                </li>
-                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Next">
-                                        <span aria-hidden="true">&raquo;</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sidebar with filters -->
-            <div class="col-md-3 order-1 mb-5 mb-md-0">
-                <form method="GET" action="">
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <h6 class="mb-0 text-uppercase">Kategorie</h6>
-                        </div>
-                        <div class="card-body">
-                            <select name="genre" class="form-select">
-                                <option value="">Wszystkie gatunki</option>
-                                <option value="Klasyka">Klasyka</option>
-                                <option value="Fantasy">Fantasy</option>
-                                <option value="Science Fiction">Science Fiction</option>
-                                <option value="Romans">Romans</option>
-                                <option value="Kryminał">Kryminał</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <h6 class="mb-0 text-uppercase">Filtruj według ceny</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="mb-2">
-                                <input type="number" name="minPrice" class="form-control" placeholder="Cena min."
-                                    step="0.01">
-                            </div>
-                            <div class="mb-2">
-                                <input type="number" name="maxPrice" class="form-control" placeholder="Cena max."
-                                    step="0.01">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <h6 class="mb-0 text-uppercase">Autor</h6>
-                        </div>
-                        <div class="card-body">
-                            <input type="text" name="author" class="form-control" placeholder="Wpisz autora">
-                        </div>
-                    </div>
-
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary">Zastosuj filtry</button>
-                    </div>
-                </form>
+                
             </div>
         </div>
     </div>

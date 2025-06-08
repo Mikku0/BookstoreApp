@@ -1,0 +1,26 @@
+@model BookstoreApp.Models.Report
+
+@{
+    ViewData["Title"] = "Utwórz Raport";
+}
+
+<div class="container mt-4">
+    <h2>Utwórz Nowy Raport</h2>
+
+    <form asp-controller="Manager" asp-action="CreateReport" method="post" novalidate>
+
+        <div class="mb-3">
+            <label asp-for="Notes" class="form-label">Uwagi</label>
+            <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="Notes" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-success">Zapisz Raport</button>
+        <a asp-action="Reports" class="btn btn-secondary ms-2">Anuluj</a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

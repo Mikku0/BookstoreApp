@@ -57,6 +57,7 @@ namespace BookstoreApp.Services
                 .Where(o => o.ClientId == clientId)
                 .Include(o => o.OrderDetails)
                 .ThenInclude(od => od.Book)
+                .OrderByDescending(o => o.Id)
                 .ToListAsync();
         }
 
@@ -67,6 +68,45 @@ namespace BookstoreApp.Services
 
             order.Status = status;
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<IEnumerable<Order>> GetOrdersByStatusAsync(OrderStatus status)
+        {
+            return await _context.Orders
+                .Where(o => o.Status == status)
+                .Include(o => o.Client)
+                .Include(o => o.OrderDetails)
+                .ThenInclude(od => od.Book)
+                .OrderByDescending(o => o.Id)
+                .ToListAsync();
+        }
+
+        public async Task<Order?> GetOrderWithDetailsAsync(int orderId)
+        {
+            return await _context.Orders
+                .Include(o => o.Client)
+                .Include(o => o.OrderDetails)
+                .ThenInclude(od => od.Book)
+                .Include(o => o.Deliveries)
+                .FirstOrDefaultAsync(o => o.Id == orderId);
+        }
+
+        public async Task<bool> CanCancelOrderAsync(int orderId, int clientId)
+        {
+            var order = await _context.Orders
+                .FirstOrDefaultAsync(o => o.Id == orderId && o.ClientId == clientId);
+
+            return order != null && order.Status == OrderStatus.Oczekujące;
+        }
+
+        public async Task<IEnumerable<Order>> GetAllOrdersAsync()
+        {
+            return await _context.Orders
+                .Include(o => o.Client)
+                .Include(o => o.OrderDetails)
+                .ThenInclude(od => od.Book)
+                .OrderByDescending(o => o.Id)
+                .ToListAsync();
         }
     }
 }

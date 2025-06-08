@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 namespace BookstoreApp.Controllers
 {
-    [Authorize] // Cały kontroler wymaga logowania
+    [Authorize]
     public class CartController : Controller
     {
         private readonly BookstoreContext _context;
@@ -20,7 +20,7 @@ namespace BookstoreApp.Controllers
             _bookService = bookService;
         }
 
-        // GET: Cart
+
         public async Task<IActionResult> Index()
         {
             var userId = GetCurrentUserId();
@@ -28,7 +28,7 @@ namespace BookstoreApp.Controllers
             return View(cart);
         }
 
-        // POST: Cart/AddToCart
+
         [HttpPost]
         public async Task<IActionResult> AddToCart(int bookId, int quantity = 1)
         {
@@ -41,18 +41,18 @@ namespace BookstoreApp.Controllers
             var userId = GetCurrentUserId();
             var cart = await GetOrCreateUserCartAsync(userId);
 
-            // Sprawdź czy książka już jest w koszyku
+
             var existingItem = cart.Items.FirstOrDefault(i => i.BookId == bookId);
-            
+
             if (existingItem != null)
             {
-                // Zwiększ ilość jeśli książka już jest w koszyku
+
                 existingItem.Quantity += quantity;
                 _context.CartItems.Update(existingItem);
             }
             else
             {
-                // Dodaj nową pozycję do koszyka
+
                 var cartItem = new CartItem
                 {
                     CartId = cart.Id,
@@ -64,14 +64,14 @@ namespace BookstoreApp.Controllers
 
             await _context.SaveChangesAsync();
 
-            // Zaktualizuj wartość koszyka
+
             await UpdateCartValueAsync(cart.Id);
 
             TempData["Success"] = $"Dodano '{book.Name}' do koszyka!";
             return RedirectToAction("Index", "Books");
         }
 
-        // POST: Cart/UpdateQuantity
+
         [HttpPost]
         public async Task<IActionResult> UpdateQuantity(int cartItemId, int quantity)
         {
@@ -94,13 +94,13 @@ namespace BookstoreApp.Controllers
             _context.CartItems.Update(cartItem);
             await _context.SaveChangesAsync();
 
-            // Zaktualizuj wartość koszyka
+
             await UpdateCartValueAsync(cartItem.CartId);
 
             return RedirectToAction("Index");
         }
 
-        // POST: Cart/RemoveFromCart
+
         [HttpPost]
         public async Task<IActionResult> RemoveFromCart(int cartItemId)
         {
@@ -117,18 +117,18 @@ namespace BookstoreApp.Controllers
 
             var cartId = cartItem.CartId;
             var bookName = cartItem.Book.Name;
-            
+
             _context.CartItems.Remove(cartItem);
             await _context.SaveChangesAsync();
 
-            // Zaktualizuj wartość koszyka
+
             await UpdateCartValueAsync(cartId);
 
             TempData["Success"] = $"Usunięto '{bookName}' z koszyka.";
             return RedirectToAction("Index");
         }
 
-        // POST: Cart/ClearCart
+
         [HttpPost]
         public async Task<IActionResult> ClearCart()
         {
@@ -142,7 +142,7 @@ namespace BookstoreApp.Controllers
                 _context.CartItems.RemoveRange(cart.Items);
                 await _context.SaveChangesAsync();
 
-                // Zaktualizuj wartość koszyka
+
                 await UpdateCartValueAsync(cart.Id);
 
                 TempData["Success"] = "Koszyk został wyczyszczony.";
@@ -151,7 +151,7 @@ namespace BookstoreApp.Controllers
             return RedirectToAction("Index");
         }
 
-        // GET: Cart/Checkout
+
         public async Task<IActionResult> Checkout()
         {
             var userId = GetCurrentUserId();
@@ -169,7 +169,7 @@ namespace BookstoreApp.Controllers
             return View(cart);
         }
 
-        // POST: Cart/ProcessCheckout
+
         [HttpPost]
         public async Task<IActionResult> ProcessCheckout()
         {
@@ -185,7 +185,7 @@ namespace BookstoreApp.Controllers
                 return RedirectToAction("Index");
             }
 
-            // Utwórz zamówienie (użytkownik jest już zalogowany)
+
             var order = new Order
             {
                 ClientId = userId,
@@ -196,7 +196,7 @@ namespace BookstoreApp.Controllers
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
-            // Dodaj szczegóły zamówienia
+
             foreach (var item in cart.Items)
             {
                 var orderDetail = new OrderDetails
@@ -211,7 +211,7 @@ namespace BookstoreApp.Controllers
 
             await _context.SaveChangesAsync();
 
-            // Wyczyść koszyk po złożeniu zamówienia
+
             _context.CartItems.RemoveRange(cart.Items);
             await _context.SaveChangesAsync();
             await UpdateCartValueAsync(cart.Id);
@@ -220,7 +220,7 @@ namespace BookstoreApp.Controllers
             return RedirectToAction("OrderConfirmation", new { orderId = order.Id });
         }
 
-        // GET: Cart/OrderConfirmation
+
         public async Task<IActionResult> OrderConfirmation(int orderId)
         {
             var userId = GetCurrentUserId();
@@ -238,7 +238,7 @@ namespace BookstoreApp.Controllers
             return View(order);
         }
 
-        // GET: Cart/GetCartItemCount - dla AJAX
+
         [HttpGet]
         public async Task<IActionResult> GetCartItemCount()
         {
@@ -272,16 +272,16 @@ namespace BookstoreApp.Controllers
 
             if (cart == null)
             {
-                // Utwórz nowy koszyk dla użytkownika
-                cart = new Cart 
-                { 
+
+                cart = new Cart
+                {
                     UserId = userId,
-                    Value = 0 
+                    Value = 0
                 };
                 _context.Carts.Add(cart);
                 await _context.SaveChangesAsync();
-                
-                // Reload cart with navigation properties
+
+
                 cart = await _context.Carts
                     .Include(c => c.Items)
                     .ThenInclude(ci => ci.Book)
@@ -307,5 +307,39 @@ namespace BookstoreApp.Controllers
         }
 
         #endregion
+        [HttpGet]
+        public async Task<IActionResult> CheckoutSummary()
+        {
+            var userId = GetCurrentUserId();
+            var cart = await _context.Carts
+                .Include(c => c.Items)
+                .ThenInclude(ci => ci.Book)
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+
+            if (cart == null || !cart.Items.Any())
+            {
+                TempData["Error"] = "Koszyk jest pusty.";
+                return RedirectToAction("Index");
+            }
+
+            var unavailableItems = new List<string>();
+            foreach (var item in cart.Items)
+            {
+            }
+
+            ViewBag.UnavailableItems = unavailableItems;
+            return View(cart);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateDeliveryInfo(string deliveryAddress, string deliveryNotes)
+        {
+            var userId = GetCurrentUserId();
+
+            TempData["DeliveryAddress"] = deliveryAddress;
+            TempData["DeliveryNotes"] = deliveryNotes;
+
+            return RedirectToAction("ProcessCheckout");
+        }
     }
 }

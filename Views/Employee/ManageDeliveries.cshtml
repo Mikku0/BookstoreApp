@@ -1,0 +1,51 @@
+@using BookstoreApp.Models
+@model List<BookstoreApp.Models.Delivery>
+
+<h2>Zarządzanie dostawami</h2>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID Dostawy</th>
+                <th>Zamówienie</th>
+                <th>Klient</th>
+                <th>Pracownik</th>
+                <th>Status</th>
+                <th>Akcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var delivery in Model)
+            {
+                <tr>
+                    <td>#@delivery.Id</td>
+                    <td>#@delivery.Order.Id</td>
+                    <td>@delivery.Order.Client.FirstName</td>
+                    <td>@delivery.Employee.FirstName</td>
+                    <td>@delivery.Order.Status</td>
+                    <td>
+                        <a href="@Url.Action("DeliveryDetails", new { id = delivery.Id })"
+                            class="btn btn-info btn-sm">Szczegóły</a>
+
+                        @if (delivery.Order.Status == OrderStatus.Opłacone)
+                        {
+                            <form asp-action="CompleteDelivery" asp-route-id="@delivery.Id" method="post"
+                                style="display: inline;">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-success btn-sm"
+                                    onclick="return confirm('Czy na pewno chcesz zrealizować tę dostawę?')">
+                                    Zrealizuj
+                                </button>
+                            </form>
+                        }
+                        else if (delivery.Order.Status == OrderStatus.Wysłane)
+                        {
+                        <span class="btn btn-success">Zrealizowane</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

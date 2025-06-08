@@ -1,0 +1,44 @@
+@{
+    ViewData["Title"] = "Order Confirmation";
+    Layout = "_Layout";
+}
+
+@model BookstoreApp.Models.Order
+
+<div class="site-wrap">
+    <div class="bg-light py-3">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 mb-0">
+                    <a href="/">Home</a> <span class="mx-2 mb-0">/</span>
+                    <span>Potwierdzenie zamówienia</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="site-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <span class="icon-check_circle display-3 text-success"></span>
+                    <h2 class="display-3 text-black">Dziękujemy!</h2>
+                    <p class="lead mb-5">Twoje zamówienie zostało złożone pomyślnie.</p>
+
+                    <form asp-controller="Client" asp-action="CancelOrder" asp-route-id="@Model.Id" method="post"
+                        onsubmit="return confirm('Czy na pewno chcesz anulować to zamówienie?')">
+                        <button type="submit" class="btn btn-sm btn-danger">
+                            Anuluj zamówienie
+                        </button>
+                    </form>
+
+                    <form asp-controller="Client" asp-action="PayForOrder" asp-route-id="@Model.Id" method="post">
+                        <button type="submit" class="btn btn-sm btn-primary mt-2">
+                            Przejdź do płatności
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

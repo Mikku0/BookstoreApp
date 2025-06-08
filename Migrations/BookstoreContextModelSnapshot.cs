@@ -139,10 +139,15 @@ namespace BookstoreApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("OrderId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
 
                     b.HasIndex("OrderId");
 
@@ -182,8 +187,9 @@ namespace BookstoreApp.Migrations
                     b.Property<int?>("ManagerId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("TEXT");
@@ -239,11 +245,16 @@ namespace BookstoreApp.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("ManagerId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Notes")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ManagerId");
 
                     b.ToTable("Reports");
                 });
@@ -324,14 +335,22 @@ namespace BookstoreApp.Migrations
                 {
                     b.HasBaseType("BookstoreApp.Models.RegisteredUser");
 
+                    b.Property<int?>("CartId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("DateOfEmployment")
                         .HasColumnType("TEXT");
 
                     b.Property<decimal>("Salary")
                         .HasColumnType("TEXT");
 
+                    b.HasIndex("CartId");
+
                     b.ToTable("Users", t =>
                         {
+                            t.Property("CartId")
+                                .HasColumnName("Employee_CartId");
+
                             t.Property("DateOfEmployment")
                                 .HasColumnName("Employee_DateOfEmployment");
 
@@ -346,11 +365,16 @@ namespace BookstoreApp.Migrations
                 {
                     b.HasBaseType("BookstoreApp.Models.RegisteredUser");
 
+                    b.Property<int?>("CartId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("DateOfEmployment")
                         .HasColumnType("TEXT");
 
                     b.Property<decimal>("Salary")
                         .HasColumnType("TEXT");
+
+                    b.HasIndex("CartId");
 
                     b.HasDiscriminator().HasValue("Manager");
                 });
@@ -381,13 +405,13 @@ namespace BookstoreApp.Migrations
 
             modelBuilder.Entity("BookstoreApp.Models.Cart", b =>
                 {
-                    b.HasOne("BookstoreApp.Models.RegisteredUser", "User")
+                    b.HasOne("BookstoreApp.Models.Client", "Client")
                         .WithOne("Cart")
                         .HasForeignKey("BookstoreApp.Models.Cart", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Client");
                 });
 
             modelBuilder.Entity("BookstoreApp.Models.CartItem", b =>
@@ -411,11 +435,19 @@ namespace BookstoreApp.Migrations
 
             modelBuilder.Entity("BookstoreApp.Models.Delivery", b =>
                 {
+                    b.HasOne("BookstoreApp.Models.Employee", "Employee")
+                        .WithMany("Deliveries")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("BookstoreApp.Models.Order", "Order")
                         .WithMany("Deliveries")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Employee");
 
                     b.Navigation("Order");
                 });
@@ -458,6 +490,35 @@ namespace BookstoreApp.Migrations
                     b.Navigation("Order");
                 });
 
+            modelBuilder.Entity("BookstoreApp.Models.Report", b =>
+                {
+                    b.HasOne("BookstoreApp.Models.Manager", "Manager")
+                        .WithMany("Reports")
+                        .HasForeignKey("ManagerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Manager");
+                });
+
+            modelBuilder.Entity("BookstoreApp.Models.Employee", b =>
+                {
+                    b.HasOne("BookstoreApp.Models.Cart", "Cart")
+                        .WithMany()
+                        .HasForeignKey("CartId");
+
+                    b.Navigation("Cart");
+                });
+
+            modelBuilder.Entity("BookstoreApp.Models.Manager", b =>
+                {
+                    b.HasOne("BookstoreApp.Models.Cart", "Cart")
+                        .WithMany()
+                        .HasForeignKey("CartId");
+
+                    b.Navigation("Cart");
+                });
+
             modelBuilder.Entity("BookstoreApp.Models.Book", b =>
                 {
                     b.Navigation("CartItems");
@@ -482,24 +543,25 @@ namespace BookstoreApp.Migrations
                     b.Navigation("Books");
                 });
 
-            modelBuilder.Entity("BookstoreApp.Models.RegisteredUser", b =>
-                {
-                    b.Navigation("Cart");
-                });
-
             modelBuilder.Entity("BookstoreApp.Models.Client", b =>
                 {
+                    b.Navigation("Cart");
+
                     b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("BookstoreApp.Models.Employee", b =>
                 {
+                    b.Navigation("Deliveries");
+
                     b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("BookstoreApp.Models.Manager", b =>
                 {
                     b.Navigation("Orders");
+
+                    b.Navigation("Reports");
                 });
 #pragma warning restore 612, 618
         }

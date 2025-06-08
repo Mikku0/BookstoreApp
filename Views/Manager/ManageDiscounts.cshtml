@@ -1,0 +1,30 @@
+@model IEnumerable<BookstoreApp.Models.Discount>
+
+@{
+    ViewData["Title"] = "Zarządzaj zniżkami";
+}
+
+<h2>Zarządzaj zniżkami</h2>
+
+<a asp-action="AddDiscount" class="btn btn-primary mb-3">Dodaj nową zniżkę</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Opis</th>
+            <th>Procent</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var discount in Model)
+        {
+            <tr>
+                <td>@discount.Description</td>
+                <td>@discount.Percentage %</td>
+                <td>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

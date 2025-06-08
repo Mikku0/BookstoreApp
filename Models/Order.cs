@@ -16,9 +16,9 @@ public class Order
     public virtual ICollection<OrderDetails> OrderDetails { get; set; } = new List<OrderDetails>();
     public virtual ICollection<Delivery> Deliveries { get; set; } = new List<Delivery>();
 
-    public void PrintOrderDetails()
+    public string PrintOrderDetails()
     {
-        // Print order details
+        return $"{Client.FirstName}, {Client.LastName}, {Status}, {TotalPrice}";
     }
 
     public void CancelOrder()

@@ -1,0 +1,64 @@
+@{
+    ViewData["Title"] = "Raporty";
+    var salesReport = ViewBag.SalesReport as IEnumerable<dynamic>;
+    var ownReports = ViewBag.OwnReports as List<BookstoreApp.Models.Report>;
+}
+
+<div class="container mt-4">
+    <h2>Raporty Sprzedaży</h2>
+
+    <table class="table table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Tytuł Książki</th>
+                <th>Sprzedana Ilość</th>
+                <th>Łączny Przychód</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in salesReport!)
+            {
+                <tr>
+                    <td>@item.BookName</td>
+                    <td>@item.TotalQuantity</td>
+                    <td>@item.TotalRevenue.ToString("C")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <hr />
+
+    <h3 class="mt-5">Twoje Raporty</h3>
+
+    @if (ownReports != null && ownReports.Any())
+    {
+        <table class="table table-bordered mt-3">
+            <thead>
+                <tr>
+                    <th>Data Utworzenia</th>
+                    <th>Opis</th>
+                    <th>Uwagi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var report in ownReports)
+                {
+                    <tr>
+                        <td>@report.CreationDate.ToString("dd.MM.yyyy HH:mm")</td>
+                        <td>@report.Data</td>
+                        <td>@report.Notes</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <p>Łącznie raportów: @ownReports.Count</p>
+    }
+
+    else
+    {
+        <p class="text-muted">Brak raportów utworzonych przez Ciebie.</p>
+    }
+
+    <a class="btn btn-primary mt-3" href="@Url.Action("CreateReport")">Utwórz Nowy Raport</a>
+</div>

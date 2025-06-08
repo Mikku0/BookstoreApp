@@ -28,6 +28,49 @@ namespace BookstoreApp.Controllers
             var success = await _userService.RegisterUserAsync(firstName, lastName, login, password, address);
             if (success)
             {
+                TempData["Success"] = "Rejestracja klienta przebiegła pomyślnie!";
+                return RedirectToAction("Login");
+            }
+            ViewBag.Error = "Rejestracja nie powiodła się. Login może być już zajęty.";
+            return View();
+        }
+
+        [HttpGet]
+        [Route("Users/RegisterEmployee")]
+        public IActionResult RegisterEmployee()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Route("Users/RegisterEmployee")]
+        public async Task<IActionResult> RegisterEmployee(string firstName, string lastName, string login, string password)
+        {
+            var success = await _userService.RegisterEmployeeAsync(firstName, lastName, login, password);
+            if (success)
+            {
+                TempData["Success"] = "Rejestracja pracownika przebiegła pomyślnie!";
+                return RedirectToAction("Login");
+            }
+            ViewBag.Error = "Rejestracja nie powiodła się. Login może być już zajęty.";
+            return View();
+        }
+
+        [HttpGet]
+        [Route("Users/RegisterManager")]
+        public IActionResult RegisterManager()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Route("Users/RegisterManager")]
+        public async Task<IActionResult> RegisterManager(string firstName, string lastName, string login, string password)
+        {
+            var success = await _userService.RegisterManagerAsync(firstName, lastName, login, password);
+            if (success)
+            {
+                TempData["Success"] = "Rejestracja kierownika przebiegła pomyślnie!";
                 return RedirectToAction("Login");
             }
             ViewBag.Error = "Rejestracja nie powiodła się. Login może być już zajęty.";
@@ -46,7 +89,6 @@ namespace BookstoreApp.Controllers
             var user = await _userService.LoginAsync(login, password);
             if (user != null)
             {
-                // Tworzenie claimsów
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, user.UserLogin),
@@ -63,10 +105,16 @@ namespace BookstoreApp.Controllers
                     ExpiresUtc = DateTime.UtcNow.AddHours(24)
                 };
 
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, 
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                     new ClaimsPrincipal(claimsIdentity), authProperties);
 
-                return RedirectToAction("Index", "Home");
+                return user.GetType().Name switch
+                {
+                    "Client" => RedirectToAction("Dashboard", "Client"),
+                    "Employee" => RedirectToAction("Dashboard", "Employee"),
+                    "Manager" => RedirectToAction("Dashboard", "Manager"),
+                    _ => RedirectToAction("Index", "Home")
+                };
             }
             ViewBag.Error = "Nieprawidłowe dane logowania.";
             return View();
@@ -82,6 +130,20 @@ namespace BookstoreApp.Controllers
 
         [Authorize]
         public IActionResult Profile()
+        {
+            var userType = User.FindFirst("UserType")?.Value;
+
+            return userType switch
+            {
+                "Client" => RedirectToAction("Profile", "Client"),
+                "Employee" => RedirectToAction("Dashboard", "Employee"),
+                "Manager" => RedirectToAction("Dashboard", "Manager"),
+                _ => View()
+            };
+        }
+        [HttpGet]
+        [Route("Users/ChooseRegistration")]
+        public IActionResult ChooseRegistration()
         {
             return View();
         }

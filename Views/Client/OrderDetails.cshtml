@@ -1,0 +1,205 @@
+@model BookstoreApp.Models.Order
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Potwierdzenie zamówienia - Księgarnia</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        .confirmation-header {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+        .order-summary-card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        .card-header {
+            background: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            font-weight: 600;
+        }
+        .order-item {
+            border-bottom: 1px solid #eee;
+            padding: 1rem 0;
+        }
+        .order-item:last-child {
+            border-bottom: none;
+        }
+        .status-badge {
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+        }
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .total-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #28a745;
+        }
+        .action-buttons {
+            margin-top: 2rem;
+        }
+        .btn-custom {
+            border-radius: 25px;
+            padding: 0.75rem 2rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .order-details-table {
+            margin-bottom: 0;
+        }
+        .client-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .success-icon {
+            font-size: 4rem;
+            color: #28a745;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <p></p>
+    </div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">                
+                <div class="client-info">
+                    <h5>Dane zamawiającego</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Imię i nazwisko:</strong><br>
+                            @Model.Client.FirstName @Model.Client.LastName
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Adres dostawy:</strong><br>
+                            @Model.Client.Address
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card order-summary-card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            Szczegóły zamówienia #@Model.Id
+                        </h5>
+                        <span class="status-badge status-pending">
+                            @Model.Status
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.OrderDetails != null && Model.OrderDetails.Any())
+                        {
+                            <div class="table-responsive">
+                                <table class="table order-details-table">
+                                   
+                                    <tbody>
+                                        @foreach (var detail in Model.OrderDetails)
+                                        {
+                                            <tr class="order-item">
+                                                <td>
+                                                    <strong>@detail.Book.Name</strong>
+                                                    <br>
+                                                    <small class="text-muted">@detail.Book.Genre</small>
+                                                </td>
+                                                <td>@detail.Book.Author</td>
+                                                <td class="text-center">
+                                                    <span class="badge bg-secondary">@detail.Quantity szt.</span>
+                                                </td>
+                                                <td class="text-end">@detail.Book.Price.ToString("C")</td>
+                                                <td class="text-end">
+                                                    <strong>@((detail.Book.Price * detail.Quantity).ToString("C"))</strong>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <hr>
+                            
+                            <div class="row">
+                                <div class="col-md-6 offset-md-6">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Wartość książek:</span>
+                                        <span>@Model.TotalPrice.ToString("C")</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Koszt dostawy:</span>
+                                        <span class="text-success">Darmowa</span>
+                                    </div>
+                                    <hr>
+                                    <div class="d-flex justify-content-between">
+                                        <strong class="total-price">Razem do zapłaty:</strong>
+                                        <strong class="total-price">@Model.TotalPrice.ToString("C")</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning">
+                                Brak szczegółów zamówienia.
+                            </div>
+                        }
+                    </div>
+                </div>
+                
+                
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <script>       
+        setInterval(function() {
+            fetch(`/OrderTracking/Status/@Model.Id`)
+                .then(response => response.json())
+                .then(data => {                   
+                    const statusElements = document.querySelectorAll('.status-badge');
+                    statusElements.forEach(element => {
+                        if (element.textContent.trim() !== data.status) {
+                            element.textContent = data.status;                           
+                            element.style.animation = 'pulse 2s';
+                        }
+                    });
+                })
+                .catch(error => console.log('Błąd pobierania statusu:', error));
+        }, 30000);
+       
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
+    </script>
+
+</body>
+</html>

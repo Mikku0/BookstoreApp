@@ -1,0 +1,29 @@
+@{
+    ViewData["Title"] = "Mój profil";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mb-0">Mój profil</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Imię:</strong> @User.FindFirst("FirstName")?.Value</p>
+                            <p><strong>Nazwisko:</strong> @User.FindFirst("LastName")?.Value</p>
+                            <p><strong>Login:</strong> @User.Identity?.Name</p>
+                            <p><strong>Typ konta:</strong> @User.FindFirst("UserType")?.Value</p>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <a href="#" class="btn btn-primary">Edytuj profil</a>
+                        <a href="#" class="btn btn-secondary">Moje zamówienia</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

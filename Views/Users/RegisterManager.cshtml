@@ -1,0 +1,51 @@
+@{
+    ViewData["Title"] = "Rejestracja Kierownika";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0">Rejestracja Kierownika</h4>
+                </div>
+                <div class="card-body">
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger">@ViewBag.Error</div>
+                    }
+                    
+                    <form method="post">
+                        <div class="mb-3">
+                            <label for="firstName" class="form-label">Imię</label>
+                            <input type="text" class="form-control" id="firstName" name="firstName" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="lastName" class="form-label">Nazwisko</label>
+                            <input type="text" class="form-control" id="lastName" name="lastName" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="login" class="form-label">Login</label>
+                            <input type="text" class="form-control" id="login" name="login" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Hasło</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-warning">Zarejestruj Kierownika</button>
+                        </div>
+                    </form>
+                    
+                    <div class="text-center mt-3">
+                        <a href="@Url.Action("Login", "Users")" class="text-decoration-none">Masz już konto? Zaloguj się</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

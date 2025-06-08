@@ -9,19 +9,12 @@ public class Manager : RegisteredUser
 {
     public decimal Salary { get; set; }
     public DateTime DateOfEmployment { get; set; }
+    public virtual ICollection<Report> Reports { get; set; } = new List<Report>();
 
-    public void CreateReport()
-    {
-        // Create reports
-    }
 
-    public void ViewReports()
-    {
-        // View existing reports
-    }
+    public void CreateReport() { }
 
-    public void AddDiscount()
-    {
-        // Add discount functionality
-    }
+    public void ViewReports() { }
+
+    public void AddDiscount() { }
 }

@@ -11,4 +11,7 @@ public class Report
     public string Data { get; set; } = "";
     public DateTime CreationDate { get; set; }
     public string Notes { get; set; } = "";
+
+    public int ManagerId { get; set; }
+    public virtual Manager Manager { get; set; } = null!;
 }

@@ -1,0 +1,51 @@
+@if (User.Identity.IsAuthenticated)
+{
+    var userType = User.FindFirst("UserType")?.Value;
+    var firstName = User.FindFirst("FirstName")?.Value;
+    
+    <div class="navbar-nav ms-auto">
+        <div class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Witaj, @firstName!
+            </a>
+            <ul class="dropdown-menu">
+                @if (userType == "Client")
+                {
+                    <li><a class="dropdown-item" href="@Url.Action("Dashboard", "Client")">Mój Panel</a></li>
+                    <li><a class="dropdown-item" href="@Url.Action("MyOrders", "Client")">Moje Zamówienia</a></li>
+                    <li><a class="dropdown-item" href="@Url.Action("Profile", "Client")">Profil</a></li>
+                    <li><a class="dropdown-item" href="@Url.Action("Index", "Cart")">Koszyk</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                }
+                @if (userType == "Employee")
+                {
+                    <li><a class="dropdown-item" href="@Url.Action("Dashboard", "Employee")">Panel Pracownika</a></li>
+                    <li><a class="dropdown-item" href="@Url.Action("ManageOrders", "Employee")">Zarządzaj Zamówieniami</a></li>
+                    <li><a class="dropdown-item" href="@Url.Action("ManageBooks", "Employee")">Zarządzaj Książkami</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                }
+                @if (userType == "Manager")
+                {
+                    <li><a class="dropdown-item" href="@Url.Action("Dashboard", "Manager")">Panel Kierownika</a></li>
+                    <li><a class="dropdown-item" href="@Url.Action("Reports", "Manager")">Raporty</a></li>
+                    <li><a class="dropdown-item" href="@Url.Action("ManageUsers", "Manager")">Zarządzaj Użytkownikami</a></li>
+                    <li><a class="dropdown-item" href="@Url.Action("AddBook", "Manager")">Dodaj Książkę</a></li>
+                    <li><a class="dropdown-item" href="@Url.Action("ManageBooks", "Employee")">Zarządzaj Książkami</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                }
+                <li>
+                    <form method="post" action="@Url.Action("Logout", "Users")" class="d-inline">
+                        <button type="submit" class="dropdown-item">Wyloguj</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+}
+else
+{
+    <div class="navbar-nav ms-auto">
+        <a class="nav-link" href="@Url.Action("Login", "Users")">Zaloguj</a>
+        <a class="nav-link" href="@Url.Action("Register", "Users")">Zarejestruj</a>
+    </div>
+}
