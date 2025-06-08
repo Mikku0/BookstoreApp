@@ -1,0 +1,82 @@
+@{
+    ViewBag.Title = "Cart";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Cart</li>
+        </ol>
+    </nav>
+
+    <form method="post" action="@Url.Action("UpdateCart")">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th class="product-thumbnail">Image</th>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Remove</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.CartItems)
+                {
+                    <tr>
+                        <td class="product-thumbnail">
+                            <img src="@item.ImageUrl" class="img-fluid" />
+                        </td>
+                        <td>@item.Name</td>
+                        <td>$@item.Price.ToString("F2")</td>
+                        <td>
+                            <input type="number" name="Quantity[@item.Id]" value="@item.Quantity" min="1" class="form-control text-center" style="max-width: 70px;" />
+                        </td>
+                        <td>$@(item.Quantity * item.Price).ToString("F2")</td>
+                        <td>
+                            <form method="post" action="@Url.Action("RemoveItem", new { id = item.Id })">
+                                <button type="submit" class="btn btn-primary btn-sm">X</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <button type="submit" class="btn btn-primary btn-block">Update Cart</button>
+            </div>
+            <div class="col-md-6 text-right">
+                <a href="@Url.Action("Shop")" class="btn btn-outline-primary btn-block">Continue Shopping</a>
+            </div>
+        </div>
+    </form>
+
+    <div class="row justify-content-end">
+        <div class="col-md-6">
+            <div class="cart-totals">
+                <h4>Cart Totals</h4>
+                <div class="d-flex justify-content-between">
+                    <span>Cart value</span>
+                    <span>$@Model.OriginalTotal.ToString("F2")</span>
+                </div>
+                @if (Model.Discount > 0)
+                {
+                    <div class="d-flex justify-content-between">
+                        <span>Discount</span>
+                        <span>-$@Model.DiscountAmount.ToString("F2")</span>
+                    </div>
+                }
+                <div class="d-flex justify-content-between font-weight-bold">
+                    <span>Total</span>
+                    <span>$@Model.FinalTotal.ToString("F2")</span>
+                </div>
+                <a href="@Url.Action("Checkout")" class="btn btn-primary btn-lg btn-block mt-3">Proceed To Checkout</a>
+            </div>
+        </div>
+    </div>
+</div>

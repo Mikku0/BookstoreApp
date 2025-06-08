@@ -1,0 +1,180 @@
+@model IEnumerable<BookstoreApp.Models.Book>
+@{
+    ViewData["Title"] = "Sklep";
+}
+
+<div class="site-wrap">
+    <div class="bg-light py-3">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 mb-0">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb bg-transparent mb-0">
+                            <li class="breadcrumb-item">
+                                <a asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">Sklep</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container py-4">
+        <div class="row">
+            <div class="col-md-9 order-2">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h2 class="h4 text-black">Wszystkie książki</h2>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex justify-content-end">
+                            <div class="dropdown me-2">
+                                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
+                                    data-bs-toggle="dropdown">
+                                    Sortuj
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Najnowsze</a></li>
+                                    <li><a class="dropdown-item" href="#">Nazwa A-Z</a></li>
+                                    <li><a class="dropdown-item" href="#">Nazwa Z-A</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item" href="#">Cena: rosnąco</a></li>
+                                    <li><a class="dropdown-item" href="#">Cena: malejąco</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    @foreach (var book in Model)
+                    {
+                        <div class="col-sm-6 col-lg-4 mb-4">
+                            <div class="card h-100 border shadow-sm">
+                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center"
+                                    style="height: 250px;">
+                                    <i class="fas fa-book" style="font-size: 4rem; color: #6c757d;"></i>
+                                </div>
+                                <div class="card-body d-flex flex-column text-center">
+                                    <h5 class="card-title">
+                                        <a asp-controller="Books" asp-action="Details" asp-route-id="@book.Id"
+                                            class="text-decoration-none">
+                                            @book.Name
+                                        </a>
+                                    </h5>
+                                    <p class="card-text text-muted mb-2">@book.Author</p>
+                                    <p class="card-text"><small class="text-muted">@book.Genre</small></p>
+                                    <div class="mt-auto">
+                                        <p class="text-primary fw-bold h5 mb-3">@book.Price.ToString("C", new
+                                                                                    System.Globalization.CultureInfo("pl-PL"))</p>
+                                    <div class="d-grid gap-2">
+                                        <a asp-controller="Books" asp-action="Details" asp-route-id="@book.Id"
+                                            class="btn btn-outline-primary btn-sm">
+                                            Zobacz szczegóły
+                                        </a>
+                                        @if (User.Identity?.IsAuthenticated == true)
+                                            {
+                                                <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                                                    <input type="hidden" name="bookId" value="@book.Id" />
+                                                    <input type="hidden" name="quantity" value="1" />
+                                                    <button type="submit" class="btn btn-primary btn-sm">
+                                                        <i class="fas fa-shopping-cart me-1"></i> Dodaj do koszyka
+                                                    </button>
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <a asp-controller="Users" asp-action="Login"
+                                                    class="btn btn-outline-primary btn-sm">
+                                                    Zaloguj się, aby kupić
+                                                </a>
+                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Pagination -->
+                <div class="row mt-4">
+                    <div class="col-md-12 text-center">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item">
+                                    <a class="page-link" href="#" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar with filters -->
+            <div class="col-md-3 order-1 mb-5 mb-md-0">
+                <form method="GET" action="">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0 text-uppercase">Kategorie</h6>
+                        </div>
+                        <div class="card-body">
+                            <select name="genre" class="form-select">
+                                <option value="">Wszystkie gatunki</option>
+                                <option value="Klasyka">Klasyka</option>
+                                <option value="Fantasy">Fantasy</option>
+                                <option value="Science Fiction">Science Fiction</option>
+                                <option value="Romans">Romans</option>
+                                <option value="Kryminał">Kryminał</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0 text-uppercase">Filtruj według ceny</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-2">
+                                <input type="number" name="minPrice" class="form-control" placeholder="Cena min."
+                                    step="0.01">
+                            </div>
+                            <div class="mb-2">
+                                <input type="number" name="maxPrice" class="form-control" placeholder="Cena max."
+                                    step="0.01">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0 text-uppercase">Autor</h6>
+                        </div>
+                        <div class="card-body">
+                            <input type="text" name="author" class="form-control" placeholder="Wpisz autora">
+                        </div>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Zastosuj filtry</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

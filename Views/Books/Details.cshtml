@@ -1,0 +1,77 @@
+@model BookstoreApp.Models.Book
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a asp-controller="Home" asp-action="Index">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a asp-controller="Books" asp-action="Index">Sklep</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="bg-light d-flex align-items-center justify-content-center" style="height: 500px;">
+                <i class="fas fa-book" style="font-size: 8rem; color: #6c757d;"></i>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h1 class="display-5 mb-3">@Model.Name</h1>
+            <p class="lead text-muted mb-3">@Model.Author</p>
+
+            <div class="mb-4">
+                <span class="badge bg-secondary">@Model.Genre</span>
+            </div>
+
+            <div class="mb-4">
+                <span class="display-6 text-primary fw-bold">
+                    @Model.Price.ToString("C", new System.Globalization.CultureInfo("pl-PL"))
+                </span>
+            </div>
+
+            <div class="mb-4">
+                <h5>Opis książki</h5>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="quantity" class="form-label">Ilość:</label>
+                    <input type="number" class="form-control" id="quantity" value="1" min="1" max="10">
+                </div>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex">
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <form asp-controller="Cart" asp-action="AddToCart" method="post" class="me-md-2">
+                        <input type="hidden" name="bookId" value="@Model.Id" />
+                        <input type="hidden" name="quantity" value="1" />
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-cart-plus me-2"></i>Dodaj do koszyka
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <a asp-controller="Users" asp-action="Login" class="btn btn-outline-primary btn-lg me-md-2">
+                        Zaloguj się, aby kupić
+                    </a>
+                }
+
+                <button class="btn btn-outline-secondary btn-lg" type="button">
+                    <i class="fas fa-heart me-2"></i>Dodaj do ulubionych
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
